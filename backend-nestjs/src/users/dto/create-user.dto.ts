@@ -36,4 +36,7 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   address?: string;
+
+  @IsOptional()
+  isActive?: boolean;
 }

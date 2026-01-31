@@ -23,9 +23,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<Omit<User, 'password'>> {
     const existingUser = await this.userModel.findOne({
       email: createUserDto.email,
     });
@@ -39,9 +39,8 @@ export class UsersService {
       password: hashedPassword,
     });
     const savedUser = await createdUser.save();
-    const userObject = savedUser.toObject();
-    delete userObject.password;
-    return userObject;
+    const { password, ...userWithoutPassword } = savedUser.toObject();
+    return userWithoutPassword;
   }
 
   async findAll(
